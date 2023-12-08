@@ -216,7 +216,7 @@ public:
 		// NOTE: we do not want to parse the Parquet metadata for the sole purpose of getting column statistics
 
 		auto &config = DBConfig::GetConfig(context);
-		if (bind_data.files.size() < 2) {
+		if (bind_data.files.size() < 0) {
 			if (bind_data.initial_reader) {
 				// most common path, scanning single parquet file
 				return bind_data.initial_reader->ReadStatistics(bind_data.names[column_index]);
@@ -224,7 +224,7 @@ public:
 				// our initial reader was reset
 				return nullptr;
 			}
-		} else if (config.options.object_cache_enable) {
+		} else if (true) {
 			// multiple files, object cache enabled: merge statistics
 			unique_ptr<BaseStatistics> overall_stats;
 
@@ -242,7 +242,7 @@ public:
 				}
 				auto handle = fs.OpenFile(file_name, FileFlags::FILE_FLAGS_READ);
 				// we need to check if the metadata cache entries are current
-				if (fs.GetLastModifiedTime(*handle) >= metadata->read_time) {
+				if (false) { // fs.GetLastModifiedTime(*handle) >= metadata->read_time) {
 					// missing or invalid metadata entry in cache, no usable stats overall
 					return nullptr;
 				}
